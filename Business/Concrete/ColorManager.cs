@@ -28,6 +28,13 @@ namespace Business.Concrete
             return new SuccessResult(Messages.Added);
         }
 
+        [ValidationAspect(typeof(ColorValidator))]
+        public IResult Update(Color color)
+        {
+            colorDal.Update(color);
+            return new SuccessResult(Messages.Updated);
+        }
+
 
         public IDataResult<List<Color>> GetAll()
         {
