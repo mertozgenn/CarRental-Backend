@@ -7,8 +7,10 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net.Cache;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace Core.Utilities.Security.JWT
 {
@@ -58,5 +60,6 @@ namespace Core.Utilities.Security.JWT
             claims.AddRoles(operationClaims.Select(c => c.Name).ToArray());
             return claims;
         }
+
     }
 }

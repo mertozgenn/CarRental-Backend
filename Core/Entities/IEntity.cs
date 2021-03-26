@@ -4,7 +4,6 @@ using System.Text;
 
 namespace Core.Entities
 {
-    // bir veri tabanı tablosudur
     public interface IEntity
     {
         

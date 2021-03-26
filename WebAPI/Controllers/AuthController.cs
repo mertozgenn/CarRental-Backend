@@ -5,7 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Core.Extensions;
+using Microsoft.VisualBasic.CompilerServices;
 
 namespace WebAPI.Controllers
 {
@@ -32,10 +35,22 @@ namespace WebAPI.Controllers
             var result = _authService.createAccessToken(userToLogin.Data);
             if (result.Success)
             {
-                return Ok(result.Data);
+                return Ok(result);
             }
 
-            return BadRequest(result.Message);
+            return BadRequest(result);
+        }
+
+        [HttpGet("getuserid")]
+        public IActionResult GetUserId()
+        {
+            var result = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (result != null)
+            {
+                return Ok(int.Parse(result.Value));
+            }
+
+            return Ok();
         }
 
         [HttpPost("register")]
@@ -51,10 +66,10 @@ namespace WebAPI.Controllers
             var result = _authService.createAccessToken(registerResult.Data);
             if (result.Success)
             {
-                return Ok(result.Data);
+                return Ok(result);
             }
 
-            return BadRequest(result.Message);
+            return BadRequest(result);
         }
     }
 }
