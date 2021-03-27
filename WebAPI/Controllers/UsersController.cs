@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Entities.DTOs;
 
 namespace WebAPI.Controllers
 {
@@ -43,6 +44,15 @@ namespace WebAPI.Controllers
         public IActionResult Add(User user)
         {
             var result = _userService.Add(user);
+            if (result.Success)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpPost("update")]
+        public IActionResult Update(User user)
+        {
+            var result = _userService.Update(user);
             if (result.Success)
                 return Ok(result);
             return BadRequest(result);
