@@ -44,7 +44,7 @@ namespace Business.Concrete
 
         public IResult Delete(CarImage carImage)
         {
-            File.Delete(_carImageDal.Get(c => c.Id == carImage.Id).ImagePath);
+            File.Delete(Directory.GetCurrentDirectory() + "\\wwwroot\\Pictures\\" + _carImageDal.Get(c => c.Id == carImage.Id).ImagePath);
             _carImageDal.Delete(carImage);
             return new SuccessResult(Messages.Deleted);
         }
@@ -78,7 +78,7 @@ namespace Business.Concrete
         [ValidationAspect(typeof(CarImageValidator))]
         public IResult Update(CarImage carImage)
         {
-            File.Delete(_carImageDal.Get(c => c.Id == carImage.Id).ImagePath);
+            File.Delete(Directory.GetCurrentDirectory() + "\\wwwroot\\Pictures\\" + _carImageDal.Get(c => c.Id == carImage.Id).ImagePath);
             SetDirectory(carImage);
             carImage.Date = DateTime.Now.Date;
             _carImageDal.Update(carImage);
