@@ -2,7 +2,7 @@
 
 - This project is a car rental back-end project for [kodlama.io](https://www.kodlama.io) assignments
 - [Front-end](https://github.com/mertozgenn/ReCapProject-Front-End)
-- Autofac, FluentValidation, AOP, IoC, Entity Framework, JWT, WebAPI are used.
+- Autofac, FluentValidation, Entity Framework, JWT, WebAPI are used.
 ---
 
 ### Architecture
