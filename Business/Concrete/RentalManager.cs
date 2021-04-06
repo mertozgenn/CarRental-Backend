@@ -27,7 +27,7 @@ namespace Business.Concrete
         [ValidationAspect(typeof(RentalValidator))]
         public IResult Add(Rental rental)
         {
-            IResult result = BusinessRules.Run(CheckIfCarIsReturned(rental.CarId));
+            IResult result = BusinessRules.Run(CheckIfCarIsReturned(rental));
             if (result != null)
             {
                 return result;
@@ -60,12 +60,13 @@ namespace Business.Concrete
             return new SuccessDataResult<List<RentalDetailDto>>(_rentalDal.GetRentalDetails());
         }
 
-        private IResult CheckIfCarIsReturned(int carId)
+        private IResult CheckIfCarIsReturned(Rental rental)
         {
-            if (_rentalDal.GetAll(r => r.CarId == carId && r.ReturnDate == null).Any())
+            if (_rentalDal.GetAll(r => r.CarId == rental.CarId && r.ReturnDate == null).Any())
             {
                 return new ErrorResult(Messages.RentalFailed);
             }
+
             return new SuccessResult();
         }
     }

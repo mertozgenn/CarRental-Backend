@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Business.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 
 namespace WebAPI.Controllers
 {
@@ -27,6 +28,21 @@ namespace WebAPI.Controllers
             if (result.Success)
                 return Ok(result);
             return BadRequest(result);
+        }
+
+        [HttpPost("delete")]
+        public IActionResult Delete(CreditCard creditCard)
+        {
+            var result = _creditCardService.Delete(creditCard);
+            if (result.Success)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [HttpPost("pay")]
+        public IActionResult Pay(PaymentDto paymentDto)
+        {
+            return Ok();
         }
 
         [HttpGet("get")]

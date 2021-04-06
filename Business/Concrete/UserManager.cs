@@ -8,6 +8,7 @@ using Core.Entities.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Core.Utilities.Security.Hashing;
 using Entities.DTOs;
 
 namespace Business.Concrete
@@ -26,6 +27,15 @@ namespace Business.Concrete
         {
             _userDal.Add(user);
             return new SuccessResult(Messages.Added);
+        }
+
+        [ValidationAspect(typeof(UserValidator))]
+        public IResult Update(User user)
+        {
+            user.PasswordHash = _userDal.Get(u => u.Id == user.Id).PasswordHash;
+            user.PasswordSalt = _userDal.Get(u => u.Id == user.Id).PasswordSalt;
+            _userDal.Update(user);
+            return new SuccessResult(Messages.Updated);
         }
 
         public IDataResult<List<User>> GetAll()
@@ -50,10 +60,23 @@ namespace Business.Concrete
             return new SuccessDataResult<List<OperationClaim>>(_userDal.GetClaims(user));
         }
 
-        public IResult Update(User user)
+        public IResult ChangePassword(int userId, string password)
         {
+            var userToUpdate = _userDal.Get(u => u.Id == userId);
+            byte[] passwordHash, passwordSalt;
+            HashingHelper.CreatePasswordHash(password, out passwordSalt, out passwordHash);
+            var user = new User
+            {
+                Id = userToUpdate.Id,
+                Email = userToUpdate.Email,
+                FirstName = userToUpdate.FirstName,
+                LastName = userToUpdate.LastName,
+                PasswordHash = passwordHash,
+                PasswordSalt = passwordSalt,
+                Status = true
+            };
             _userDal.Update(user);
-            return new SuccessResult();
+            return new SuccessResult(Messages.PasswordChanged);
         }
     }
 }

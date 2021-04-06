@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Entities.DTOs;
 
@@ -52,10 +53,32 @@ namespace WebAPI.Controllers
         [HttpPost("update")]
         public IActionResult Update(User user)
         {
-            var result = _userService.Update(user);
-            if (result.Success)
-                return Ok(result);
-            return BadRequest(result);
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (userId != null)
+            {
+                user.Id = int.Parse(userId.Value);
+                user.Status = true;
+                var result = _userService.Update(user);
+                if (result.Success)
+                {
+                    return Ok(result);
+                }
+            }
+            return BadRequest();
+        }
+
+        [HttpPost("changepassword")]
+        public IActionResult ChangePassword(IDictionary<string,string> dataDictionary)
+        {
+            var password = dataDictionary["password"];
+            var result = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (result != null)
+            {
+                var finalResult = _userService.ChangePassword(int.Parse(result.Value), password);
+                return Ok(finalResult);
+            }
+
+            return BadRequest();
         }
     }
 }

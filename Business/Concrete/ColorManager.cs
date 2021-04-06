@@ -13,33 +13,38 @@ namespace Business.Concrete
 {
     public class ColorManager : IColorService
     {
-        IColorDal colorDal;
+        IColorDal _colorDal;
 
         public ColorManager(IColorDal colorDal)
         {
-            this.colorDal = colorDal;
+            _colorDal = colorDal;
         }
 
 
         [ValidationAspect(typeof(ColorValidator))]
         public IResult Add(Color color)
         {
-            colorDal.Add(color);
+            _colorDal.Add(color);
             return new SuccessResult(Messages.Added);
         }
 
         [ValidationAspect(typeof(ColorValidator))]
         public IResult Update(Color color)
         {
-            colorDal.Update(color);
+            _colorDal.Update(color);
             return new SuccessResult(Messages.Updated);
         }
 
 
         public IDataResult<List<Color>> GetAll()
+        { 
+            return new SuccessDataResult<List<Color>>(_colorDal.GetAll());
+        }
+
+        public IResult Delete(Color color)
         {
-            colorDal.GetAll();
-            return new SuccessDataResult<List<Color>>(colorDal.GetAll());
+            _colorDal.Delete(color);
+            return new SuccessResult();
         }
     }
 }

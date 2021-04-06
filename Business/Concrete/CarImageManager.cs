@@ -29,6 +29,7 @@ namespace Business.Concrete
         [ValidationAspect(typeof(CarImageValidator))]
         public IResult Add(CarImage carImage)
         {
+
             var result = BusinessRules.Run(CheckCarPictureNumber(carImage.CarId));
             if (result != null)
             {
@@ -70,7 +71,7 @@ namespace Business.Concrete
                 return new SuccessDataResult<List<CarImage>>(result);
             }
             return new SuccessDataResult<List<CarImage>>(new List<CarImage>() { 
-                new CarImage() { ImagePath = Directory.GetParent(Directory.GetCurrentDirectory()) + "\\Pictures\\default.jpg" } });
+                new CarImage() { ImagePath = "default.jpg" } });
         }
 
 
@@ -98,8 +99,8 @@ namespace Business.Concrete
         {
             string guidKey = Guid.NewGuid().ToString();
             string fileType = carImage.ImagePath.Substring(carImage.ImagePath.LastIndexOf('.'));
-            File.Copy(carImage.ImagePath, Directory.GetParent(Directory.GetCurrentDirectory()) + "\\Pictures\\" + guidKey + fileType);
-            carImage.ImagePath = Directory.GetParent(Directory.GetCurrentDirectory()) + "\\Pictures\\" + guidKey + fileType;
+            File.Copy(carImage.ImagePath, Directory.GetCurrentDirectory() + "\\wwwroot\\Pictures\\" + guidKey + fileType);
+            carImage.ImagePath = guidKey + fileType;
         }
     }
 }

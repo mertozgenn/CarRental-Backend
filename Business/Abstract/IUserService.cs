@@ -15,5 +15,6 @@ namespace Business.Abstract
         IResult Add(User user);
         IResult Update(User user);
         IDataResult<List<User>> GetAll();
+        IResult ChangePassword(int userId, string password);
     }
 }
