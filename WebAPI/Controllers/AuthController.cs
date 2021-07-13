@@ -1,14 +1,8 @@
 ﻿using Business.Abstract;
 using Entities.DTOs;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using Core.Extensions;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace WebAPI.Controllers
 {
@@ -41,7 +35,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpGet("getuserid")]
+        [HttpGet("getUserId")]
         public IActionResult GetUserId()
         {
             var result = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);

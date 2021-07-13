@@ -1,13 +1,9 @@
 ﻿using Business.Abstract;
 using Core.Entities.Concrete;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using Entities.DTOs;
 
 namespace WebAPI.Controllers
 {
@@ -22,7 +18,7 @@ namespace WebAPI.Controllers
             _userService = userService;
         }
 
-        [HttpGet("getall")]
+        [HttpGet("getAll")]
         public IActionResult GetAll()
         {
             var result = _userService.GetAll();
@@ -31,7 +27,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpGet("getbyid")]
+        [HttpGet("getById")]
         public IActionResult GetById(int userId)
         {
             var result = _userService.GetUserInfo(userId);
@@ -67,7 +63,7 @@ namespace WebAPI.Controllers
             return BadRequest();
         }
 
-        [HttpPost("changepassword")]
+        [HttpPost("changePassword")]
         public IActionResult ChangePassword(IDictionary<string,string> dataDictionary)
         {
             var password = dataDictionary["password"];

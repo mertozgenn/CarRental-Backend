@@ -5,9 +5,7 @@ using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Core.Entities.Concrete;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using Core.Utilities.Security.Hashing;
 using Entities.DTOs;
 
@@ -44,10 +42,10 @@ namespace Business.Concrete
             return new SuccessDataResult<List<User>>(_userDal.GetAll());
         }
 
-        public IDataResult<List<UserDto>> GetUserInfo(int userId)
+        public IDataResult<UserDto> GetUserInfo(int userId)
         {
             _userDal.GetUserInfo(userId);
-            return new SuccessDataResult<List<UserDto>>(_userDal.GetUserInfo(userId));
+            return new SuccessDataResult<UserDto>(_userDal.GetUserInfo(userId)[0]);
         }
 
         public IDataResult<User> GetByMail(string email)

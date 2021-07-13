@@ -1,9 +1,6 @@
 ﻿using Core.Entities.Concrete;
 using Entities.Concrete;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DataAccess.Concrete.EntityFramework
 {
@@ -11,7 +8,7 @@ namespace DataAccess.Concrete.EntityFramework
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Cars;Trusted_Connection=true");
+            optionsBuilder.UseSqlServer(@"Server=localhost, 1433;Database=Cars;User Id=sa;Password=DockerSa@2021");
         }
 
         public DbSet<Car> Cars { get; set; }

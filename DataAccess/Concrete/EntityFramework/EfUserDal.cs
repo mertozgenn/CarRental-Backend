@@ -1,12 +1,9 @@
 ﻿using Core.DataAccess.EntityFramework;
 using DataAccess.Abstract;
 using Core.Entities.Concrete;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 using Entities.DTOs;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 
 namespace DataAccess.Concrete.EntityFramework
 {
