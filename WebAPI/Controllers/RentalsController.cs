@@ -1,4 +1,6 @@
-﻿using Business.Abstract;
+﻿using System.Linq;
+using System.Security.Claims;
+using Business.Abstract;
 using Entities.Concrete;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,10 +11,12 @@ namespace WebAPI.Controllers
     public class RentalsController : ControllerBase
     {
         IRentalService _rentalService;
+        ICustomerService _customerService;
 
-        public RentalsController(IRentalService rentalService)
+        public RentalsController(IRentalService rentalService, ICustomerService customerService)
         {
             _rentalService = rentalService;
+            _customerService = customerService;
         }
 
         [HttpGet("getAll")]
@@ -38,6 +42,8 @@ namespace WebAPI.Controllers
         [HttpPost("add")]
         public IActionResult Add(Rental rental)
         {
+            var customer = _customerService.GetByUserId(int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value)).Data;
+            rental.CustomerId = customer.Id;
             var result = _rentalService.Add(rental);
             if (result.Success)
                 return Ok(result);

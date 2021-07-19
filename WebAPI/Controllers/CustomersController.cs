@@ -1,4 +1,6 @@
-﻿using Business.Abstract;
+﻿using System.Linq;
+using System.Security.Claims;
+using Business.Abstract;
 using Entities.Concrete;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,8 +27,9 @@ namespace WebAPI.Controllers
         }
 
        [HttpGet("getByUserId")]
-        public IActionResult GetByUserId(int userId)
+        public IActionResult GetByUserId()
         {
+            var userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
             var result = _customerService.GetByUserId(userId);
             if (result.Success)
                 return Ok(result);
@@ -36,6 +39,7 @@ namespace WebAPI.Controllers
         [HttpPost("add")]
         public IActionResult Add(Customer customer)
         {
+            customer.UserId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
             var result = _customerService.Add(customer);
             if (result.Success)
                 return Ok(result);

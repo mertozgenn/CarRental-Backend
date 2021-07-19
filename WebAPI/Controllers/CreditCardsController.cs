@@ -2,6 +2,8 @@
 using Business.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
+using System.Linq;
+using System.Security.Claims;
 
 namespace WebAPI.Controllers
 {
@@ -19,6 +21,7 @@ namespace WebAPI.Controllers
         [HttpPost("add")]
         public IActionResult Add(CreditCard creditCard)
         {
+            creditCard.UserId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
             var result = _creditCardService.Add(creditCard);
             if (result.Success)
                 return Ok(result);
@@ -41,8 +44,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("get")]
-        public IActionResult Get(int userId)
+        public IActionResult Get()
         {
+            var userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
             var result = _creditCardService.Get(userId);
             if (result.Success)
                 return Ok(result);

@@ -1,5 +1,7 @@
 ﻿using Business.Abstract;
 using Core.Entities.Concrete;
+using Core.Utilities.Results;
+using Entities.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,12 +29,20 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpGet("getById")]
-        public IActionResult GetById(int userId)
+        [HttpGet("get")]
+        public IActionResult Get()
         {
-            var result = _userService.GetUserInfo(userId);
-            if (result.Success)
-                return Ok(result);
+            IDataResult<UserDto> result = null;
+            try
+            {
+                int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
+                result = _userService.GetUserInfo(userId);
+                if (result.Success)
+                    return Ok(result);
+            }
+            catch
+            {
+            }
             return BadRequest(result);
         }
 

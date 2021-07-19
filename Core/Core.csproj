@@ -13,10 +13,29 @@
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.8.0" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.1" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.8.0" />
+    <PackageReference Include="log4net" Version="2.0.12" />
+    <PackageReference Include="MicroKnights.Log4NetAdoNetAppender" Version="2.2.0" />
+    <PackageReference Include="MicroKnights.Log4NetHelper" Version="2.2.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="CrossCuttingConcerns\Caching\Redis\" />
+    <Folder Include="CrossCuttingConcerns\Logging\" />
+    <Folder Include="Aspects\Autofac\Logging\" />
+    <Folder Include="Aspects\Autofac\Exception\" />
+    <Folder Include="Utilities\Messages\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="log4net" />
+    <None Remove="CrossCuttingConcerns\Logging\" />
+    <None Remove="Aspects\Autofac\Logging\" />
+    <None Remove="Microsoft.ApplicationInsights.Log4NetAppender" />
+    <None Remove="MicroKnights.Log4NetAdoNetAppender" />
+    <None Remove="MicroKnights.Log4NetHelper" />
+    <None Remove="System.Data.SqlClient" />
+    <None Remove="Aspects\Autofac\Exception\" />
+    <None Remove="Utilities\Messages\" />
+  </ItemGroup>
 </Project>

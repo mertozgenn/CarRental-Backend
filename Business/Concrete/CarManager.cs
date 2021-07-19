@@ -3,7 +3,10 @@ using Business.BusinessAspects.Autofac;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Logging;
+using Core.Aspects.Autofac.Performance;
 using Core.Aspects.Autofac.Validation;
+using Core.CrossCuttingConcerns.Logging.Log4Net.Loggers;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -25,6 +28,9 @@ namespace Business.Concrete
         [SecuredOperation("car.add, admin")]
         [ValidationAspect(typeof(CarValidator))]
         [CacheRemoveAspect("ICarService.Get")]
+        [LogAspect(typeof(DatabaseLogger))]
+        [LogAspect(typeof(FileLogger))]
+        [PerformanceAspect(3)]
         public IResult Add(Car car)
         {
             carDal.Add(car);
@@ -48,6 +54,9 @@ namespace Business.Concrete
 
 
         [CacheAspect]
+        [LogAspect(typeof(DatabaseLogger))]
+        [LogAspect(typeof(FileLogger))]
+        [PerformanceAspect(3)]
         public IDataResult<List<Car>> GetAll()
         {
      
@@ -59,6 +68,9 @@ namespace Business.Concrete
         }
 
         [CacheAspect]
+        [LogAspect(typeof(DatabaseLogger))]
+        [LogAspect(typeof(FileLogger))]
+        [PerformanceAspect(3)]
         public IDataResult<List<CarDetailDto>> GetCarDetails()
         {
             
