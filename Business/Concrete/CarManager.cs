@@ -13,16 +13,19 @@ using Entities.Concrete;
 using Entities.DTOs;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Business.Concrete
 {
     public class CarManager : ICarService
     {
-        ICarDal carDal; 
+        ICarDal _carDal;
+        ICarImageService _imageService;
 
-        public CarManager(ICarDal carDal)
+        public CarManager(ICarDal carDal, ICarImageService imageService)
         {
-            this.carDal = carDal;
+            _carDal = carDal;
+            _imageService = imageService;
         }
 
         [SecuredOperation("car.add, admin")]
@@ -33,7 +36,7 @@ namespace Business.Concrete
         [PerformanceAspect(3)]
         public IResult Add(Car car)
         {
-            carDal.Add(car);
+            _carDal.Add(car);
             return new SuccessResult(Messages.Added);
         }
 
@@ -41,14 +44,14 @@ namespace Business.Concrete
         [CacheRemoveAspect("ICarService.Get")]
         public IResult Update(Car car)
         {
-            carDal.Update(car);
+            _carDal.Update(car);
             return new SuccessResult(Messages.Updated);
         }
 
         [CacheRemoveAspect("ICarService.Get")]
         public IResult Delete(Car car)
         {
-            carDal.Delete(car);
+            _carDal.Delete(car);
             return new SuccessResult(Messages.Updated);
         }
 
@@ -64,42 +67,54 @@ namespace Business.Concrete
             {
                 return new ErrorDataResult<List<Car>>(Messages.MaintenanceTime);
             }
-            return new SuccessDataResult<List<Car>>(carDal.GetAll(), Messages.CarsListed);
+            return new SuccessDataResult<List<Car>>(_carDal.GetAll(), Messages.CarsListed);
         }
 
         [CacheAspect]
         [LogAspect(typeof(DatabaseLogger))]
-        [LogAspect(typeof(FileLogger))]
         [PerformanceAspect(3)]
         public IDataResult<List<CarDetailDto>> GetCarDetails()
         {
-            
-            return new SuccessDataResult<List<CarDetailDto>>(carDal.GetCarDetails());
+            var result = _carDal.GetCarDetails();
+            foreach (var car in result)
+            {
+
+                if (!car.Images.Any())
+                {
+                    car.Images.Add(new CarImage { ImagePath="default.jpg" });
+                }
+            }
+            return new SuccessDataResult<List<CarDetailDto>>(result);
         }
 
         public IDataResult<List<CarDetailDto>> GetCarDetailsByColor(int colorId)
         {
-            return new SuccessDataResult<List<CarDetailDto>>(carDal.GetCarDetails(c => c.ColorId == colorId));
+            return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails(c => c.ColorId == colorId));
         }
 
         public IDataResult<List<CarDetailDto>> GetCarDetailsByBrand(int brandId)
         {
-            return new SuccessDataResult<List<CarDetailDto>>(carDal.GetCarDetails(c => c.BrandId == brandId));
+            return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails(c => c.BrandId == brandId));
         }
 
         public IDataResult<CarDetailDto> GetCarDetailsById(int id)
         {
-            return new SuccessDataResult<CarDetailDto>(carDal.GetCarDetails(c => c.CarId == id)[0]);
+            var result = _carDal.GetCarDetails(c => c.CarId == id)[0];
+            if (!result.Images.Any())
+            {
+                result.Images.Add(new CarImage { ImagePath = "default.jpg" });
+            }
+            return new SuccessDataResult<CarDetailDto>(result);
         }
 
         public IDataResult<int> GetFindeks(int id)
         {
-            return new SuccessDataResult<int>(carDal.Get(c => c.CarId == id).MinFindeks);
+            return new SuccessDataResult<int>(_carDal.Get(c => c.CarId == id).MinFindeks);
         }
 
         public IDataResult<Car> GetById(int id)
         {
-            return new SuccessDataResult<Car>(carDal.Get(c => c.CarId == id));
+            return new SuccessDataResult<Car>(_carDal.Get(c => c.CarId == id));
         }
     }
 }

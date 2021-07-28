@@ -42,7 +42,7 @@ namespace Business.Concrete
 
         public IResult Delete(CarImage carImage)
         {
-            File.Delete(Directory.GetCurrentDirectory() + "\\wwwroot\\Pictures\\" + _carImageDal.Get(c => c.Id == carImage.Id).ImagePath);
+            File.Delete(Directory.GetCurrentDirectory() + "/wwwroot/Pictures/" + _carImageDal.Get(c => c.Id == carImage.Id).ImagePath);
             _carImageDal.Delete(carImage);
             return new SuccessResult(Messages.Deleted);
         }
@@ -76,7 +76,7 @@ namespace Business.Concrete
         [ValidationAspect(typeof(CarImageValidator))]
         public IResult Update(CarImage carImage)
         {
-            File.Delete(Directory.GetCurrentDirectory() + "\\wwwroot\\Pictures\\" + _carImageDal.Get(c => c.Id == carImage.Id).ImagePath);
+            File.Delete(Directory.GetCurrentDirectory() + "/wwwroot/Pictures/" + _carImageDal.Get(c => c.Id == carImage.Id).ImagePath);
             SetDirectory(carImage);
             carImage.Date = DateTime.Now.Date;
             _carImageDal.Update(carImage);
@@ -97,7 +97,7 @@ namespace Business.Concrete
         {
             string guidKey = Guid.NewGuid().ToString();
             string fileType = carImage.ImagePath.Substring(carImage.ImagePath.LastIndexOf('.'));
-            File.Copy(carImage.ImagePath, Directory.GetCurrentDirectory() + "\\wwwroot\\Pictures\\" + guidKey + fileType);
+            File.Copy(carImage.ImagePath, Directory.GetCurrentDirectory() + "/wwwroot/Pictures/" + guidKey + fileType);
             carImage.ImagePath = guidKey + fileType;
         }
     }

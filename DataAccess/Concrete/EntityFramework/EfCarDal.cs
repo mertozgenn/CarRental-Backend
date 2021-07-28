@@ -29,8 +29,11 @@ namespace DataAccess.Concrete.EntityFramework
                                  ColorName = colors.ColorName,
                                  Description = car.Description,
                                  ModelYear = car.ModelYear,
-                                 DailyPrice = car.DailyPrice
+                                 DailyPrice = car.DailyPrice,
+                                 Images = context.CarImages.Where(i => i.CarId == car.CarId).ToList()
                              };
+
+
                 return filter == null ? result.ToList() : result.Where(filter).ToList();
             }
         }
