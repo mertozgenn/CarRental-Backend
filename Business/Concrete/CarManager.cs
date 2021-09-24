@@ -32,7 +32,6 @@ namespace Business.Concrete
         [ValidationAspect(typeof(CarValidator))]
         [CacheRemoveAspect("ICarService.Get")]
         [LogAspect(typeof(DatabaseLogger))]
-        [LogAspect(typeof(FileLogger))]
         [PerformanceAspect(3)]
         public IResult Add(Car car)
         {
@@ -58,7 +57,6 @@ namespace Business.Concrete
 
         [CacheAspect]
         [LogAspect(typeof(DatabaseLogger))]
-        [LogAspect(typeof(FileLogger))]
         [PerformanceAspect(3)]
         public IDataResult<List<Car>> GetAll()
         {
