@@ -32,9 +32,9 @@ namespace Business.Concrete
             return new SuccessResult();
         }
 
-        public IResult Delete(Brand brand)
+        public IResult Delete(int id)
         {
-            _brandDal.Delete(brand);
+            _brandDal.Delete(new Brand { BrandId = id });
             return new SuccessResult();
         }
     }
