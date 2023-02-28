@@ -23,7 +23,7 @@ namespace DataAccess.Concrete.EntityFramework
             }
         }
 
-        public List<UserDto> GetUserInfo(int userId)
+        public UserDto GetUserInfo(int userId)
         {
             using (var context = new CarsContext())
             {
@@ -38,7 +38,7 @@ namespace DataAccess.Concrete.EntityFramework
                         FirstName = user.FirstName,
                         LastName = user.LastName
                     };
-                return result.ToList();
+                return result.FirstOrDefault();
             }
         }
     }

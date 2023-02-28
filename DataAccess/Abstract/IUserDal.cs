@@ -8,6 +8,6 @@ namespace DataAccess.Abstract
     public interface IUserDal : IEntityRepository<User>
     {
         List<OperationClaim> GetClaims(User user);
-        List<UserDto> GetUserInfo(int userId);
+        UserDto GetUserInfo(int userId);
     }
 }

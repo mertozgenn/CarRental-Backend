@@ -1,7 +1,5 @@
 ﻿using Business.Abstract;
 using Core.Entities.Concrete;
-using Core.Utilities.Results;
-using Entities.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,71 +18,38 @@ namespace WebAPI.Controllers
             _userService = userService;
         }
 
-        [HttpGet("getAll")]
-        public IActionResult GetAll()
-        {
-            var result = _userService.GetAll();
-            if (result.Success)
-                return Ok(result);
-            return BadRequest(result);
-        }
-
         [HttpGet("get")]
         public IActionResult Get()
         {
-            IDataResult<UserDto> result = null;
-            try
-            {
-                int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
-                result = _userService.GetUserInfo(userId);
-                if (result.Success)
-                    return Ok(result);
-            }
-            catch
-            {
-            }
-            return BadRequest(result);
-        }
-
-
-        [HttpPost("add")]
-        public IActionResult Add(User user)
-        {
-            var result = _userService.Add(user);
+            int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
+            var result = _userService.GetUserInfo(userId);
             if (result.Success)
                 return Ok(result);
             return BadRequest(result);
         }
 
-        [HttpPost("update")]
+        [HttpPut("update")]
         public IActionResult Update(User user)
         {
-            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-            if (userId != null)
+            var userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
+            var result = _userService.Update(user);
+            if (result.Success)
             {
-                user.Id = int.Parse(userId.Value);
-                user.Status = true;
-                var result = _userService.Update(user);
-                if (result.Success)
-                {
-                    return Ok(result);
-                }
+                return Ok(result);
             }
             return BadRequest();
         }
 
         [HttpPost("changePassword")]
-        public IActionResult ChangePassword(IDictionary<string,string> dataDictionary)
+        public IActionResult ChangePassword([FromBody] string password)
         {
-            var password = dataDictionary["password"];
-            var result = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-            if (result != null)
+            var userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
+            var result = _userService.ChangePassword(userId, password);
+            if (result.Success)
             {
-                var finalResult = _userService.ChangePassword(int.Parse(result.Value), password);
-                return Ok(finalResult);
+                return Ok(result);
             }
-
-            return BadRequest();
+            return BadRequest(result);
         }
     }
 }

@@ -12,7 +12,6 @@ namespace Business.Abstract
         IDataResult<UserDto> GetUserInfo(int userId);
         IResult Add(User user);
         IResult Update(User user);
-        IDataResult<List<User>> GetAll();
         IResult ChangePassword(int userId, string password);
     }
 }
