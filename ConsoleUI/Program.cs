@@ -8,7 +8,7 @@ namespace ConsoleUI
     {
         static void Main(string[] args)
         {
-            CarManager carManager = new CarManager(new EfCarDal());
+            CarManager carManager = new CarManager(new EfCarDal(),new CarImageManager(new EfCarImageDal()));
             // carManager.Update(entity);
             //Color color1 = new Color() { ColorId = 1, ColorName = "Kırmızı" };
             //Color color2 = new Color() { ColorId = 2, ColorName = "Beyaz" };
