@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Entities.Concrete;
+using Entities.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
@@ -33,19 +34,10 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpGet("getAllByColor")]
-        public IActionResult GetAllByColor(int colorId)
+        [HttpPost("getByFilter")]
+        public IActionResult GetAllByColor(CarFilterModel carFilterModel)
         {
-            var result = _carService.GetAllByColor(colorId);
-            if (result.Success)
-                return Ok(result);
-            return BadRequest(result);
-        }
-
-        [HttpGet("getAllByBrand")]
-        public IActionResult GetAllByBrand(int brandId)
-        {
-            var result = _carService.GetAllByBrand(brandId);
+            var result = _carService.GetByFilter(carFilterModel);
             if (result.Success)
                 return Ok(result);
             return BadRequest(result);

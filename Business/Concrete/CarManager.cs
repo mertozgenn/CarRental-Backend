@@ -11,6 +11,7 @@ using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
+using Entities.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,25 +61,30 @@ namespace Business.Concrete
         public IDataResult<List<CarDetailDto>> GetAll()
         {
             var result = _carDal.GetCarDetails();
-            foreach (var car in result)
+            SetDefaultImages(result);
+            return new SuccessDataResult<List<CarDetailDto>>(result);
+        }
+
+        public IDataResult<List<CarDetailDto>> GetByFilter(CarFilterModel carFilterModel)
+        {
+            bool isBrandSelected = carFilterModel.BrandId != null && carFilterModel.BrandId != 0;
+            bool isColorSelected = carFilterModel.ColorId != null && carFilterModel.ColorId != 0;
+            var data = _carDal.GetCarDetails(x => (isBrandSelected ? x.BrandId == carFilterModel.BrandId : true) &&
+                                       (isColorSelected ? x.ColorId == carFilterModel.ColorId : true));
+            SetDefaultImages(data);
+            return new SuccessDataResult<List<CarDetailDto>>(data);
+        }
+
+        private void SetDefaultImages(List<CarDetailDto> cars)
+        {
+            foreach (var car in cars)
             {
 
                 if (!car.Images.Any())
                 {
-                    car.Images.Add(new CarImage { ImagePath="default.jpg" });
+                    car.Images.Add(new CarImage { ImagePath = "default.jpg" });
                 }
             }
-            return new SuccessDataResult<List<CarDetailDto>>(result);
-        }
-
-        public IDataResult<List<CarDetailDto>> GetAllByColor(int colorId)
-        {
-            return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails(c => c.ColorId == colorId));
-        }
-
-        public IDataResult<List<CarDetailDto>> GetAllByBrand(int brandId)
-        {
-            return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails(c => c.BrandId == brandId));
         }
 
         public IDataResult<CarDetailDto> GetById(int id)
