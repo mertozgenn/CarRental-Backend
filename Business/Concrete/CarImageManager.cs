@@ -6,6 +6,7 @@ using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -25,41 +26,31 @@ namespace Business.Concrete
 
 
         [ValidationAspect(typeof(CarImageValidator))]
-        public IResult Add(CarImage carImage)
+        public IResult Add(IFormFile file, int carId)
         {
-
-            var result = BusinessRules.Run(CheckCarPictureNumber(carImage.CarId));
+            var result = BusinessRules.Run(CheckCarPictureNumber(carId));
             if (result != null)
             {
                 return result;
             }
-            SetDirectory(carImage);
+            var path = Path.GetTempFileName();
+            if (file.Length > 0)
+                using (var stream = new FileStream(path, FileMode.Create))
+                    file.CopyTo(stream);
+            var carImage = new CarImage { CarId = carId, ImagePath = path };
+            PlaceFile(carImage);
             carImage.Date = DateTime.Now.Date;
             _carImageDal.Add(carImage);
             return new SuccessResult(Messages.Added);
         }
 
 
-        public IResult Delete(CarImage carImage)
+        public IResult Delete(int imageId)
         {
-            File.Delete(Directory.GetCurrentDirectory() + "/wwwroot/Pictures/" + _carImageDal.Get(c => c.Id == carImage.Id).ImagePath);
-            _carImageDal.Delete(carImage);
+            File.Delete(Directory.GetCurrentDirectory() + "/wwwroot/Pictures/" + _carImageDal.Get(c => c.Id == imageId).ImagePath);
+            _carImageDal.Delete(new CarImage { Id = imageId });
             return new SuccessResult(Messages.Deleted);
         }
-
-
-        public IDataResult<List<CarImage>> GetAll()
-        {
-     
-            return new SuccessDataResult<List<CarImage>>(_carImageDal.GetAll());
-        }
-
-
-        public IDataResult<CarImage> GetById(int id)
-        {
-            return new SuccessDataResult<CarImage>(_carImageDal.Get(c => c.Id == id));
-        }
-
 
         public IDataResult<List<CarImage>> GetByCarId(int carId)
         {
@@ -73,17 +64,6 @@ namespace Business.Concrete
         }
 
 
-        [ValidationAspect(typeof(CarImageValidator))]
-        public IResult Update(CarImage carImage)
-        {
-            File.Delete(Directory.GetCurrentDirectory() + "/wwwroot/Pictures/" + _carImageDal.Get(c => c.Id == carImage.Id).ImagePath);
-            SetDirectory(carImage);
-            carImage.Date = DateTime.Now.Date;
-            _carImageDal.Update(carImage);
-            return new SuccessResult(Messages.Updated);
-        }
-
-
         private IResult CheckCarPictureNumber(int carId)
         {
             if (_carImageDal.GetAll(c => c.CarId == carId).Count >= 5)
@@ -93,12 +73,13 @@ namespace Business.Concrete
             return new SuccessResult();
         }
 
-        private void SetDirectory(CarImage carImage)
+        private void PlaceFile(CarImage carImage)
         {
             string guidKey = Guid.NewGuid().ToString();
             string fileType = carImage.ImagePath.Substring(carImage.ImagePath.LastIndexOf('.'));
-            File.Copy(carImage.ImagePath, Directory.GetCurrentDirectory() + "/wwwroot/Pictures/" + guidKey + fileType);
-            carImage.ImagePath = guidKey + fileType;
+            string newName = guidKey + fileType;
+            File.Move(carImage.ImagePath, Directory.GetCurrentDirectory() + "/wwwroot/Pictures/" + newName);
+            carImage.ImagePath = newName;
         }
     }
 }
