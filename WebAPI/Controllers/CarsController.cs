@@ -36,7 +36,7 @@ namespace WebAPI.Controllers
         [HttpGet("getAllByColor")]
         public IActionResult GetAllByColor(int colorId)
         {
-            var result = _carService.GetCarDetailsByColor(colorId);
+            var result = _carService.GetAllByColor(colorId);
             if (result.Success)
                 return Ok(result);
             return BadRequest(result);
@@ -45,16 +45,7 @@ namespace WebAPI.Controllers
         [HttpGet("getAllByBrand")]
         public IActionResult GetAllByBrand(int brandId)
         {
-            var result = _carService.GetCarDetailsByBrand(brandId);
-            if (result.Success)
-                return Ok(result);
-            return BadRequest(result);
-        }
-
-        [HttpGet("getCarDetails")]
-        public IActionResult GetCarDetails()
-        {
-            var result = _carService.GetCarDetails();
+            var result = _carService.GetAllByBrand(brandId);
             if (result.Success)
                 return Ok(result);
             return BadRequest(result);
@@ -69,15 +60,6 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpGet("getCarDetailsById")]
-        public IActionResult GetCarDetailsById(int id)
-        {
-            var result = _carService.GetCarDetailsById(id);
-            if (result.Success)
-                return Ok(result);
-            return BadRequest(result);
-        }
-
         [HttpPost("add")]
         public IActionResult Add(Car car)
         {
@@ -87,7 +69,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpPost("update")]
+        [HttpPut("update")]
         public IActionResult Update(Car car)
         {
             var result = _carService.Update(car);
@@ -96,10 +78,10 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpPost("delete")]
-        public IActionResult Delete(Car car)
+        [HttpDelete("delete")]
+        public IActionResult Delete(int id)
         {
-            var result = _carService.Delete(car);
+            var result = _carService.Delete(id);
             if (result.Success)
                 return Ok(result);
             return BadRequest(result);

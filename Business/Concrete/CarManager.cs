@@ -48,30 +48,16 @@ namespace Business.Concrete
         }
 
         [CacheRemoveAspect("ICarService.Get")]
-        public IResult Delete(Car car)
+        public IResult Delete(int id)
         {
-            _carDal.Delete(car);
+            _carDal.Delete(new Car { CarId = id });
             return new SuccessResult(Messages.Updated);
         }
 
-
         [CacheAspect]
         [LogAspect(typeof(DatabaseLogger))]
         [PerformanceAspect(3)]
-        public IDataResult<List<Car>> GetAll()
-        {
-     
-            if (DateTime.Now.Hour == 5)
-            {
-                return new ErrorDataResult<List<Car>>(Messages.MaintenanceTime);
-            }
-            return new SuccessDataResult<List<Car>>(_carDal.GetAll(), Messages.CarsListed);
-        }
-
-        [CacheAspect]
-        [LogAspect(typeof(DatabaseLogger))]
-        [PerformanceAspect(3)]
-        public IDataResult<List<CarDetailDto>> GetCarDetails()
+        public IDataResult<List<CarDetailDto>> GetAll()
         {
             var result = _carDal.GetCarDetails();
             foreach (var car in result)
@@ -85,17 +71,17 @@ namespace Business.Concrete
             return new SuccessDataResult<List<CarDetailDto>>(result);
         }
 
-        public IDataResult<List<CarDetailDto>> GetCarDetailsByColor(int colorId)
+        public IDataResult<List<CarDetailDto>> GetAllByColor(int colorId)
         {
             return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails(c => c.ColorId == colorId));
         }
 
-        public IDataResult<List<CarDetailDto>> GetCarDetailsByBrand(int brandId)
+        public IDataResult<List<CarDetailDto>> GetAllByBrand(int brandId)
         {
             return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails(c => c.BrandId == brandId));
         }
 
-        public IDataResult<CarDetailDto> GetCarDetailsById(int id)
+        public IDataResult<CarDetailDto> GetById(int id)
         {
             var result = _carDal.GetCarDetails(c => c.CarId == id)[0];
             if (!result.Images.Any())
@@ -108,11 +94,6 @@ namespace Business.Concrete
         public IDataResult<int> GetFindeks(int id)
         {
             return new SuccessDataResult<int>(_carDal.Get(c => c.CarId == id).MinFindeks);
-        }
-
-        public IDataResult<Car> GetById(int id)
-        {
-            return new SuccessDataResult<Car>(_carDal.Get(c => c.CarId == id));
         }
     }
 }
