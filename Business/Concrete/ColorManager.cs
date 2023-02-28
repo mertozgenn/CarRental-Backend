@@ -39,9 +39,9 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Color>>(_colorDal.GetAll());
         }
 
-        public IResult Delete(Color color)
+        public IResult Delete(int id)
         {
-            _colorDal.Delete(color);
+            _colorDal.Delete(new Color { ColorId = id });
             return new SuccessResult();
         }
     }
