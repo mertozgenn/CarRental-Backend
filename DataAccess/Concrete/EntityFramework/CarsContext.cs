@@ -8,7 +8,7 @@ namespace DataAccess.Concrete.EntityFramework
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=localhost, 1433;Database=Cars;User Id=sa;Password=DockerSa@2021");
+            optionsBuilder.UseSqlServer(@"Server=localhost;Database=Cars;User Id=sa;Password=DockerSa@2021;TrustServerCertificate=true");
         }
 
         public DbSet<Car> Cars { get; set; }
