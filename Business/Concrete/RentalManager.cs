@@ -15,45 +15,29 @@ namespace Business.Concrete
     public class RentalManager : IRentalService
     {
         IRentalDal _rentalDal;
+        ICustomerService _customerService;
 
-        public RentalManager(IRentalDal rentalDal)
+        public RentalManager(IRentalDal rentalDal, ICustomerService customerService)
         {
             _rentalDal = rentalDal;
+            _customerService = customerService;
         }
 
-
         [ValidationAspect(typeof(RentalValidator))]
-        public IResult Add(Rental rental)
+        public IResult Add(Rental rental, int userId)
         {
             IResult result = BusinessRules.Run(CheckIfCarIsReturned(rental));
             if (result != null)
             {
                 return result;
             }
+            var customer = _customerService.GetByUserId(userId).Data;
+            rental.CustomerId = customer.Id;
             _rentalDal.Add(rental);
             return new SuccessResult(Messages.RentalSucceeded);
         }
 
-        [ValidationAspect(typeof(RentalValidator))]
-        public IResult Update(Rental rental)
-        {
-            _rentalDal.Update(rental);
-            return new SuccessResult(Messages.Updated);
-        }
-
-
-        public IDataResult<List<Rental>> GetAllByCarId(int carId)
-        {
-            return new SuccessDataResult<List<Rental>>(_rentalDal.GetAll(r => r.CarId == carId));
-        }
-
-        public IDataResult<List<Rental>> GetAll()
-        {
-            _rentalDal.GetAll();
-            return new SuccessDataResult<List<Rental>>(_rentalDal.GetAll());
-        }
-
-        public IDataResult<List<RentalDetailDto>> GetRentalDetails()
+        public IDataResult<List<RentalDetailDto>> GetAll()
         {
             return new SuccessDataResult<List<RentalDetailDto>>(_rentalDal.GetRentalDetails());
         }

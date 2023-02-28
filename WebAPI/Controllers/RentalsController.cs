@@ -11,12 +11,10 @@ namespace WebAPI.Controllers
     public class RentalsController : ControllerBase
     {
         IRentalService _rentalService;
-        ICustomerService _customerService;
 
-        public RentalsController(IRentalService rentalService, ICustomerService customerService)
+        public RentalsController(IRentalService rentalService)
         {
             _rentalService = rentalService;
-            _customerService = customerService;
         }
 
         [HttpGet("getAll")]
@@ -28,27 +26,14 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpGet("getRentalDetails")]
-        public IActionResult GetRentalDetails()
-        {
-            var result = _rentalService.GetRentalDetails();
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result);
-        }
-
         [HttpPost("add")]
         public IActionResult Add(Rental rental)
         {
-            var customer = _customerService.GetByUserId(int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value)).Data;
-            rental.CustomerId = customer.Id;
-            var result = _rentalService.Add(rental);
+            int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
+            var result = _rentalService.Add(rental, userId);
             if (result.Success)
                 return Ok(result);
             return BadRequest(result);
         }
-
     }
 }
